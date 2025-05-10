@@ -1,0 +1,16 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Project Structure Guide
+
+This project is an MCP (Model Context Protocol) server built with Node.js and TypeScript. It uses the [`@modelcontextprotocol/sdk`](mdc:package.json) dependency to provide MCP server functionality.
+
+The main files and directories are:
+
+- [package.json](mdc:package.json): Contains project metadata, scripts, and dependencies, including the MCP SDK.
+- [package-lock.json](mdc:package-lock.json): Automatically generated for any operations where npm modifies either the node_modules directory, or any of the project's dependencies.
+- [src/index.ts](mdc:src/index.ts): Intended as the main entry point for the MCP server setup. (Currently empty)
+
+All source code should be placed in the `src/` directory.

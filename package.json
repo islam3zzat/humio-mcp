@@ -1,0 +1,29 @@
+{
+  "name": "humio-mcp",
+  "version": "1.0.0",
+  "description": "Humio MCP Server",
+  "main": "dist/client.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.11.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "humio": "^0.4.0-beta2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.18",
+    "@types/express": "^5.0.1",
+    "@types/node": "^20.17.46",
+    "ts-node": "^10.9.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.0.0"
+  }
+}
