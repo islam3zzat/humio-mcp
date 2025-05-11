@@ -83,6 +83,72 @@ Connect to the client. Sample config
 }
 ```
 
+## Configuration File Format
+
+The `humio-query-config.json` file defines the available queries for the server. Each entry in the array should follow the structure below:
+
+| Field           | Type                       | Required | Description                                                                                 |
+|-----------------|----------------------------|----------|---------------------------------------------------------------------------------------------|
+| name            | string                     | Yes      | Unique name for the query configuration.                                                    |
+| description     | string                     | Yes      | Human-readable description of what the query does.                                          |
+| query           | string                     | Yes      | The Humio query string, can include template variables (e.g., `{{variableName}}`).          |
+| fields          | string[]                   | Yes      | List of fields to extract from the query results.                                           |
+| variables       | Variable[]                 | No       | List of variables required by the query. See below for the `Variable` format.               |
+| outputTemplate  | string                     | Yes      | Template for formatting each result. Uses `{{fieldName}}` for interpolation.                |
+| joinString      | string                     | Yes      | String used to join multiple formatted results.                                             |
+
+### Variable Format
+
+Each item in the `variables` array can be one of the following:
+
+#### Scalar Variable
+| Field       | Type                | Required | Description                                 |
+|-------------|---------------------|----------|---------------------------------------------|
+| name        | string              | Yes      | Name of the variable.                       |
+| description | string              | Yes      | Description of the variable.                |
+| type        | 'string'\|'number'\|'boolean' | Yes      | Type of the variable.                       |
+| required    | boolean             | Yes      | Whether the variable is required.           |
+
+#### Enum Variable
+| Field       | Type                | Required | Description                                 |
+|-------------|---------------------|----------|---------------------------------------------|
+| name        | string              | Yes      | Name of the variable.                       |
+| description | string              | Yes      | Description of the variable.                |
+| type        | 'enum'              | Yes      | Type of the variable (must be 'enum').      |
+| required    | boolean             | Yes      | Whether the variable is required.           |
+| enumOptions | string[]            | Yes      | Allowed values for the enum variable.       |
+
+#### Example
+
+```json
+[
+  {
+    "name": "criticalErrors",
+    "description": "Finds critical errors for the banana team grouped by message and stack trace.",
+    "query": "k8s.labels.team = banana | (severity = crit ) | groupBy([message, stack_trace])",
+    "fields": ["message", "stack_trace", "_count"],
+    "outputTemplate": "Error \"{{message}}\" occurred in total: {{_count}} times. The Stack trace is \n---{{stack_trace}}\n---\n\n",
+    "joinString": "\n"
+  },
+  {
+    "name": "projectOperationsByState",
+    "description": "Groups operations by state for a given project in the banana team.",
+    "query": "k8s.labels.team = banana | projectKey=\"{{projectKey}}\" | groupBy([fields.state])",
+    "fields": ["fields.state", "_count"],
+    "variables": [
+      {
+        "name": "projectKey",
+        "description": "The project key to filter by.",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "outputTemplate": "state: {{fields.state}} - {{_count}} operations",
+    "joinString": "\n"
+  }
+]
+```
+
 ## ⚠️ Danger: Sensitive Information
 
 **Do NOT include any sensitive information in the `fields` field of your configuration.**
