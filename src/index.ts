@@ -5,7 +5,7 @@ import { Config } from "./humio/types.js";
 import { JsonConfigProvider } from "./humio/config/jsonConfigProvider.js";
 import { HumioApiClient } from "./humio/request/humioApiClient.js";
 import { HumioService } from "./humio/humioService.js";
-import { typeToZSchema } from "./utils/schema.js";
+import { variableToZSchema } from "./utils/schema.js";
 
 const configProvider = new JsonConfigProvider("humio-query-config.json");
 const humioClient = new HumioApiClient();
@@ -19,17 +19,10 @@ function registerTools(server: McpServer, configs: Config[]) {
     for (const config of configs) {
         const args: ZodRawShape = {};
 
-        if ('variables' in config) {
-            config.variables.forEach(variable => {
-                const schema = typeToZSchema(variable.type)
-                    .describe(variable.description);
-                if (variable.required) {
-                    args[variable.name] = schema;
-                } else {
-                    args[variable.name] = schema.optional();
-                }
-            });
-        }
+        const variables = config.variables || [];
+        variables.forEach(variable => {
+            args[variable.name] = variableToZSchema(variable)
+        });
 
         server.tool(
             config.name,
@@ -41,9 +34,10 @@ function registerTools(server: McpServer, configs: Config[]) {
                 }).describe("The time range to query").default({ count: 12, unit: "h" }),
                 ...args
             },
-            async ({ region, relativeTime }: { region: string, relativeTime: { count: number, unit: string } }) => {
+            async ({ region, relativeTime, ...dynamicParams }: { region: string, relativeTime: { count: number, unit: string }, [key: string]: any }) => {
                 try {
-                    let result: string = await humioService.runQuery(region, config, relativeTime);
+                    let result: string = await humioService.runQuery(region, config, relativeTime, dynamicParams);
+
                     return {
                         content: [{ type: "text", text: result }]
                     };

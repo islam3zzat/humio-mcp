@@ -1,14 +1,31 @@
 import { z } from "zod"
+import { Variable } from "../humio/types"
 
-export const typeToZSchema = (type: string) => {
-    switch (type) {
+export const variableToZSchema = (variable: Variable) => {
+    let schema: z.ZodSchema<any>
+    switch (variable.type) {
         case "string":
-            return z.string()
+            schema = z.string()
+            break
         case "number":
-            return z.number()
+            schema = z.number()
+            break
         case "boolean":
-            return z.boolean()
+            schema = z.boolean()
+            break
+        case "enum":
+            // Hack to work around the required enumOptions field
+            const options = variable.enumOptions as [string, ...string[]]
+            schema = z.enum(options)
+            break
         default:
-            throw new Error(`Unsupported type: ${type}`)
+            const _exhaustiveCheck: never = variable
+            throw new Error(`Unsupported type: ${_exhaustiveCheck}`)
     }
+
+    if (variable.required) {
+        return schema.describe(variable.description)
+    }
+
+    return schema.optional().describe(variable.description)
 }

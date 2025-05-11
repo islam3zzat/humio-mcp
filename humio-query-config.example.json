@@ -2,7 +2,7 @@
     {
         "name": "criticalErrors",
         "description": "Finds critical errors for the banana team grouped by message and stack trace.",
-        "query": "k8s.labels.team = \"banana\" | (severity = \"crit\" ) | groupBy([message, stack_trace])",
+        "query": "k8s.labels.team = banana | (severity = crit ) | groupBy([message, stack_trace])",
         "fields": [
             "message",
             "stack_trace",
@@ -12,27 +12,22 @@
         "joinString": "\n"
     },
     {
-        "name": "unhandledMessagesErrors",
-        "description": "Finds unhandled messages errors.",
-        "query": "k8s.labels.team=\"banana\"| message = \"Unacking message: Error while running messageHandler\" | groupBy([message, stack_trace])",
+        "name": "projectOperationsByState",
+        "description": "Groups operations by state for a given project in the banana team.",
+        "query": "k8s.labels.team = banana | projectKey=\"{{projectKey}}\" | groupBy([fields.state])",
         "fields": [
-            "message",
-            "stack_trace",
+            "fields.state",
             "_count"
         ],
-        "outputTemplate": "Error \"{{message}}\" occurred in total: {{_count}} times. The Stack trace is \n---{{stack_trace}}\n---\n\n",
-        "joinString": "\n"
-    },
-    {
-        "name": "httpRequestsByStatusCode",
-        "description": "Groups http requests by status code.",
-        "query": "k8s.labels.team=\"banana\" | http_status = * | groupBy([billing_prjkey, http_status])",
-        "fields": [
-            "billing_prjkey",
-            "http_status",
-            "_count"
+        "variables": [
+            {
+                "name": "projectKey",
+                "description": "The project key to filter by.",
+                "type": "string",
+                "required": true
+            }
         ],
-        "outputTemplate": "project: {{billing_prjkey}} - {{http_status}} - {{_count}} requests",
+        "outputTemplate": "state: {{fields.state}} - {{_count}} operations",
         "joinString": "\n"
     }
 ]

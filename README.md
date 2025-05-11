@@ -59,6 +59,14 @@ or
 yarn run build
 ```
 
+### Inspection
+
+After building, you can inspect the server using the MCP Inspector:
+
+```bash
+npx @modelcontextprotocol/inspector node dist/index.js
+```
+
 Connect to the client. Sample config
 
 ```json

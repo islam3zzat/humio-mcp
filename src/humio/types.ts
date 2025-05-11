@@ -4,15 +4,15 @@ type ScalarVariable = {
     type: 'string' | 'number' | 'boolean'
     required: boolean;
 };
-type UnionVariable = {
+type EnumVariable = {
     name: string;
     description: string;
-    type: 'union';
+    type: 'enum';
     required: boolean;
-    options: string[];
+    enumOptions: string[];
 };
 
-type Variable = ScalarVariable | UnionVariable;
+export type Variable = ScalarVariable | EnumVariable;
 
 export type Config = {
     name: string;
