@@ -35,13 +35,17 @@ export const createQueryJob = async (repo: string, query: string, start: string)
     return data.id;
 };
 
+const WAIT_TIME = 5_000;
+const HUMIO_REQUEST_TIMEOUT_MS = parseInt(process.env.HUMIO_REQUEST_TIMEOUT_MS || "30000");
+const MAX_TRIES = HUMIO_REQUEST_TIMEOUT_MS / WAIT_TIME;
+
 export const fetchQueryJob = async (id: string, triesCount = 0): Promise<any> => {
     const res = await fetch(
         `${HUMIO_API}/queryjobs/${id}`,
         { method: "GET", headers: getHeaders() }
     );
     const data = (await res.json()) as { done: boolean; events: any };
-    if (data.done || triesCount >= 5) return data.events;
+    if (data.done || triesCount > MAX_TRIES) return data.events;
 
     await new Promise(res => setTimeout(res, 5_000));
 

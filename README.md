@@ -32,9 +32,10 @@ yarn install
 ```
 
 
-3. Create a `.env` file in the root directory with your Humio configuration:
+3. Create a `.env` file in the root directory with your Humio configuration (this is only useful for dev/testing as the MCP client will provide the env variables anyway):
 ```env
 HUMIO_API_TOKEN=your_api_token
+HUMIO_REQUEST_TIMEOUT_MS=30000
 ```
 
 4. Create config from the example config file
@@ -68,7 +69,8 @@ Connect to the client. Sample config
     ],
     "type": "stdio",
     "env": {
-        "TOKEN": "<HUMIO_API_TOKEN>"
+        "TOKEN": "<HUMIO_API_TOKEN>",
+        "HUMIO_REQUEST_TIMEOUT_MS": 3000
     }
 }
 ```
