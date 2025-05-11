@@ -83,6 +83,12 @@ The contents of the `fields` field are returned to the client and may be passed 
 
 Ensure that only non-sensitive, safe-to-share information is specified in the `fields` field of your config files.
 
+## ⚠️ Warning: Timeout and Partial Results
+
+If the configured timeout (`HUMIO_REQUEST_TIMEOUT_MS`) is reached during a query, the server will return the events collected up to that point. This means the results may be incomplete and might not capture all relevant events.
+
+To reduce the risk of missing data, consider adjusting the timeout value according to your expected query size and network conditions.
+
 ## Project Structure
 
 ```
