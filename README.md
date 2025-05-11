@@ -75,6 +75,14 @@ Connect to the client. Sample config
 }
 ```
 
+## ⚠️ Danger: Sensitive Information
+
+**Do NOT include any sensitive information in the `fields` field of your configuration.**
+
+The contents of the `fields` field are returned to the client and may be passed to a Large Language Model (LLM). Any sensitive data (such as API keys, passwords, personal information, or confidential business data) included here could be exposed.
+
+Ensure that only non-sensitive, safe-to-share information is specified in the `fields` field of your config files.
+
 ## Project Structure
 
 ```
