@@ -1,6 +1,5 @@
 [
     {
-        "type": "structured",
         "name": "criticalErrors",
         "description": "Finds critical errors for the banana team grouped by message and stack trace.",
         "query": "k8s.labels.team = \"banana\" | (severity = \"crit\" ) | groupBy([message, stack_trace])",
@@ -10,10 +9,9 @@
             "_count"
         ],
         "outputTemplate": "Error \"{{message}}\" occurred in total: {{_count}} times. The Stack trace is \n---{{stack_trace}}\n---\n\n",
-        "joinString": " and "
+        "joinString": "\n"
     },
     {
-        "type": "structured",
         "name": "unhandledMessagesErrors",
         "description": "Finds unhandled messages errors.",
         "query": "k8s.labels.team=\"banana\"| message = \"Unacking message: Error while running messageHandler\" | groupBy([message, stack_trace])",
@@ -23,10 +21,9 @@
             "_count"
         ],
         "outputTemplate": "Error \"{{message}}\" occurred in total: {{_count}} times. The Stack trace is \n---{{stack_trace}}\n---\n\n",
-        "joinString": " and "
+        "joinString": "\n"
     },
     {
-        "type": "structured",
         "name": "httpRequestsByStatusCode",
         "description": "Groups http requests by status code.",
         "query": "k8s.labels.team=\"banana\" | http_status = * | groupBy([billing_prjkey, http_status])",
@@ -37,18 +34,5 @@
         ],
         "outputTemplate": "project: {{billing_prjkey}} - {{http_status}} - {{_count}} requests",
         "joinString": "\n"
-    },
-    {
-        "type": "raw",
-        "name": "logQuery",
-        "description": "Fetches events from a custom query",
-        "variables": [
-            {
-                "name": "rawQuery",
-                "description": "The raw query to fetch events from",
-                "type": "string",
-                "required": true
-            }
-        ]
     }
 ]

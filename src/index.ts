@@ -41,9 +41,9 @@ function registerTools(server: McpServer, configs: Config[]) {
                 }).describe("The time range to query").default({ count: 12, unit: "h" }),
                 ...args
             },
-            async ({ region, relativeTime, ...otherArgs }: { region: string, relativeTime: { count: number, unit: string } }) => {
+            async ({ region, relativeTime }: { region: string, relativeTime: { count: number, unit: string } }) => {
                 try {
-                    let result: string = await humioService.runQuery(region, config, relativeTime, otherArgs);
+                    let result: string = await humioService.runQuery(region, config, relativeTime);
                     return {
                         content: [{ type: "text", text: result }]
                     };
