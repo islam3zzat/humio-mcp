@@ -77,7 +77,7 @@ Connect to the client. Sample config
     ],
     "type": "stdio",
     "env": {
-        "TOKEN": "<HUMIO_API_TOKEN>",
+        "HUMIO_API_TOKEN": "<HUMIO_API_TOKEN>",
         "HUMIO_REQUEST_TIMEOUT_MS": 3000
     }
 }
